@@ -1,0 +1,181 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice</title>
+    <link rel="icon" href="../icon.png">
+    <style>
+        @font-face {
+            font-family: EquationFont;
+            src: url(Louis\ George\ Cafe\ Bold.ttf);            
+        }
+        @font-face {
+            font-family: MathGG;
+            src: url(Louis\ George\ Cafe\ Bold.ttf);
+        }
+        #mathEquation {
+            color: white;
+            font-family: EquationFont;
+            height: 5px;
+            width: 100%;
+            text-align: center;
+            font-size: 50px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            position: absolute;
+            margin-top: -83;
+            margin-left: -7px;
+        }
+        #textInput {
+            border-radius: 10px;
+            border-style: solid;
+            border-color: grey;
+            width: 525px;
+            height: 50px;
+            font-family: MathGG;
+            font-size: 40px;
+            padding-top: 15px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            position: absolute;
+        }
+        #textInput::-webkit-outer-spin-button,
+        #textInput::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+        #textInput[type=number] {
+            appearance: none;
+            -moz-appearance: textfield;
+        }
+        #startButton {
+            transition: background-color 100ms ease-in-out;
+            margin-top: 53px;
+            display: block;
+            border-radius: 10px;
+            border-style: solid;
+            border-color: grey;
+            width: 525px;
+            height: 50px;
+            color: white;
+            font-family: MathGG;
+            background-color: rgba(128, 128, 128, 0.25);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            position: absolute;
+            font-size: 35px;
+            cursor: pointer;
+        }
+        #startButton:hover {
+            background-color: transparent;
+        }
+        #container {
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            position: absolute;
+            width: 720px;
+            height: 405px;
+        }
+        @keyframes correctColorFade {
+            0% {background-color: #57ff65;}
+            50% {background-color: #57ff65;}
+            75% {background-color: white;}
+            100% {background-color: white;}
+        }
+        @keyframes wrongColorFade {
+            0% {background-color: #ff5d57;}
+            50% {background-color: #ff5d57;}
+            75% {background-color: white;}
+            100% {background-color: white;}
+        }
+        body {
+            background-color: #060436;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+    <p id="mathEquation">Practice</p></p>
+    <input disabled id="textInput">
+    <button onclick="startDoc()" id="startButton">Start</button>
+    </div>
+    <button onclick="copyFunc()">Copy practice words</button>
+    <script src="words.js"></script>
+    <script>
+        const textInput = document.getElementById('textInput');
+
+        let correctAnswers = 0;
+        let wrongAnswers = [];
+        let hardAnswers = [];
+        let currentWord;
+        let displayStatus;
+        function startDoc() {
+            pickEquation();
+            document.getElementById('textInput').disabled = false;
+            document.getElementById('startButton').remove();
+            document.getElementById('textInput').focus();
+            textInputFunc();
+        }
+        function pickEquation() {
+            currentWord = words.at(Math.floor(Math.random() * (words.length+2)));
+            firstDisplay();
+        }
+        function speechFunc() {
+            utterance = new SpeechSynthesisUtterance(currentWord);
+            speechSynthesis.cancel();
+            speechSynthesis.speak(utterance);
+        }
+        function firstDisplay() {
+            displayStatus = false;
+            document.getElementById('textInput').disabled = true;
+            document.getElementById("mathEquation").innerHTML = "";
+            speechFunc();
+            setTimeout(function(){
+                document.getElementById("mathEquation").innerHTML = "";
+                document.getElementById('textInput').disabled = false; document.getElementById("textInput").focus();}, 1000)
+        }
+        function secondDisplay() {
+            displayStatus = true;
+            document.getElementById('textInput').disabled = true;
+            document.getElementById("mathEquation").innerHTML = currentWord;
+            speechFunc();
+            setTimeout(function(){
+                document.getElementById("mathEquation").innerHTML = "";
+                document.getElementById('textInput').disabled = false; document.getElementById("textInput").focus();}, 1000)
+        }
+        function textInputFunc() {
+            textInput.addEventListener('keydown', textInputEvent)
+        }
+        function textInputEvent() {
+            if(event.key == 'Enter') {
+                if(textInput.value == currentWord){
+                    textInput.style.animation = 'none';
+                    textInput.offsetWidth;
+                    textInput.style.animation = 'correctColorFade 1000ms ease-in-out';
+                    pickEquation()
+                    textInput.value = '';
+                }else{
+                    textInput.style.animation = 'none';
+                    textInput.offsetWidth;
+                    textInput.style.animation = 'wrongColorFade 1000ms ease-in-out';
+                    if(displayStatus === false){
+                        wrongAnswers.push(currentWord);
+                    }else{
+                        if(displayStatus === true){
+                            hardAnswers.push(currentWord);
+                        }
+                    }
+                    secondDisplay();
+                    textInput.value = '';
+                }
+            }
+        }
+        function copyFunc() {
+            navigator.clipboard.writeText("Wrong answers: " +wrongAnswers+" Hard words: " + hardAnswers);
+        }
+    </script>
+</body>
+</html>
