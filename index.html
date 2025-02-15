@@ -152,11 +152,19 @@
         function textInputEvent() {
             if(event.key == 'Enter') {
                 if(textInput.value == currentWord){
+                    if(displayStatus == true){
                     textInput.style.animation = 'none';
                     textInput.offsetWidth;
                     textInput.style.animation = 'correctColorFade 1000ms ease-in-out';
-                    pickEquation()
+                    firstDisplay();
                     textInput.value = '';
+                    }else{
+                    textInput.style.animation = 'none';
+                    textInput.offsetWidth;
+                    textInput.style.animation = 'correctColorFade 1000ms ease-in-out';
+                    pickEquation();
+                    textInput.value = '';
+                    }
                 }else{
                     textInput.style.animation = 'none';
                     textInput.offsetWidth;
